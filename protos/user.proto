@@ -1,0 +1,53 @@
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/user";
+
+package user;
+
+// Creates an item in the database
+service Service {
+    rpc CreateUser(RequestCreateUser) returns (ResponseCreateUser);
+    rpc Get(Parameter) returns (User);
+    rpc GetFromParent(Parameter) returns (ResponseGetFromParent);
+    rpc ValidateKey(Parameter) returns (ResponseValidateKey);
+}
+
+
+message User {
+    string                    id         = 1 [json_name="id"];  
+	string                    name       = 2 [json_name="name"];
+	string                    usename    = 3 [json_name="usename"];
+	string                    Password   = 4 [json_name="Password"];
+	string                    api_key    = 5 [json_name="api_key"];
+    string                    parent_id  = 6 [json_name="parent_id"];
+    google.protobuf.Timestamp created_at = 7 [json_name="created_at"];
+    google.protobuf.Timestamp updated_at = 8 [json_name="created_at"];
+}
+
+message RequestCreateUser {
+	string name         = 1 [json_name="name"];
+	string usename      = 2 [json_name="usename"];
+	string Password     = 3 [json_name="Password"];
+	string api_key      = 4 [json_name="api_key"];
+    string parent_id    = 5 [json_name="parent_id"];
+}
+
+message Parameter {
+    string id = 1 [json_name="id"];
+    string api_key = 2 [json_name="api_key"];
+}
+
+message ResponseValidateKey {
+    bool is_valid = 1 [json_name="is_valid"];
+}
+
+message ResponseGetFromParent {
+    repeated User users = 1;
+}
+
+message ResponseCreateUser {
+    string message = 1;
+}
