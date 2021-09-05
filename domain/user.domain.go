@@ -62,7 +62,7 @@ func (u *User) Validate() error {
 	return nil
 }
 
-//Serialize Convert from struct to protobuf object
+//Serialize Convert from protobuf to struct  object
 func (u *User) Serialize(data *protos.User) (err error) {
 	msh := jsonpb.Marshaler{EnumsAsInts: true}
 	result, _ := msh.MarshalToString(data)
@@ -70,7 +70,7 @@ func (u *User) Serialize(data *protos.User) (err error) {
 	return
 }
 
-//Deserialize Convert from protobuf  to struct  object
+//Deserialize Convert from struct to protobuf  object
 func (u *User) Deserialize(data *protos.User) (err error) {
 	byteArray, err := json.Marshal(u)
 	if err != nil {
