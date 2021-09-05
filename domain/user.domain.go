@@ -21,6 +21,8 @@ type User struct {
 	Email     string         `gorm:"type:varchar(255);NOT NULL;unique" json:"email"`
 	Password  string         `gorm:"type:varchar(255);NOT NULL" json:"-"`
 	APIKey    string         `gorm:"type:varchar(255);NOT NULL;unique" json:"api_key"`
+	ParentID  string         `json:"parent_id"`
+	Child     []*User        `json:"child" gorm:"foreignkey:ParentID"`
 	CreatedAt time.Time      `json:"created_at" gorm:"<-:create"`
 	UpdatedAt time.Time      `json:"update_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
