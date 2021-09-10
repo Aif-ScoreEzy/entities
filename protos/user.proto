@@ -10,9 +10,10 @@ package user;
 // Creates an item in the database
 service Service {
     rpc CreateUser(RequestCreateUser) returns (ResponseCreateUser);
-    rpc Get(Parameter) returns (User);
-    rpc GetFromParent(Parameter) returns (ResponseGetFromParent);
-    rpc ValidateKey(Parameter) returns (ResponseValidateKey);
+    rpc Get(ParameterId) returns (User);
+    rpc GetByUsernameOrEmail(ParameterUsername) returns (User);
+    rpc GetFromParent(ParameterId) returns (ResponseGetFromParent);
+    rpc ValidateKey(ParameterKey) returns (ResponseValidateKey);
 }
 
 
@@ -32,9 +33,17 @@ message RequestCreateUser {
     User user = 1 ;
 }
 
-message Parameter {
+message ParameterId {
     string id = 1 [json_name="id"];
-    string api_key = 2 [json_name="api_key"];
+}
+
+message ParameterKey {
+    string api_key = 1[json_name="api_key"];
+
+}
+
+message ParameterUsername {
+    string username = 1 [json_name="username"];
 }
 
 message ResponseValidateKey {

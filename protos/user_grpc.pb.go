@@ -19,9 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
 	CreateUser(ctx context.Context, in *RequestCreateUser, opts ...grpc.CallOption) (*ResponseCreateUser, error)
-	Get(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*User, error)
-	GetFromParent(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*ResponseGetFromParent, error)
-	ValidateKey(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*ResponseValidateKey, error)
+	Get(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error)
+	GetByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error)
+	GetFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error)
+	ValidateKey(ctx context.Context, in *ParameterKey, opts ...grpc.CallOption) (*ResponseValidateKey, error)
 }
 
 type serviceClient struct {
@@ -41,7 +42,7 @@ func (c *serviceClient) CreateUser(ctx context.Context, in *RequestCreateUser, o
 	return out, nil
 }
 
-func (c *serviceClient) Get(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*User, error) {
+func (c *serviceClient) Get(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/user.Service/Get", in, out, opts...)
 	if err != nil {
@@ -50,7 +51,16 @@ func (c *serviceClient) Get(ctx context.Context, in *Parameter, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *serviceClient) GetFromParent(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*ResponseGetFromParent, error) {
+func (c *serviceClient) GetByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/user.Service/GetByUsernameOrEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error) {
 	out := new(ResponseGetFromParent)
 	err := c.cc.Invoke(ctx, "/user.Service/GetFromParent", in, out, opts...)
 	if err != nil {
@@ -59,7 +69,7 @@ func (c *serviceClient) GetFromParent(ctx context.Context, in *Parameter, opts .
 	return out, nil
 }
 
-func (c *serviceClient) ValidateKey(ctx context.Context, in *Parameter, opts ...grpc.CallOption) (*ResponseValidateKey, error) {
+func (c *serviceClient) ValidateKey(ctx context.Context, in *ParameterKey, opts ...grpc.CallOption) (*ResponseValidateKey, error) {
 	out := new(ResponseValidateKey)
 	err := c.cc.Invoke(ctx, "/user.Service/ValidateKey", in, out, opts...)
 	if err != nil {
@@ -73,9 +83,10 @@ func (c *serviceClient) ValidateKey(ctx context.Context, in *Parameter, opts ...
 // for forward compatibility
 type ServiceServer interface {
 	CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error)
-	Get(context.Context, *Parameter) (*User, error)
-	GetFromParent(context.Context, *Parameter) (*ResponseGetFromParent, error)
-	ValidateKey(context.Context, *Parameter) (*ResponseValidateKey, error)
+	Get(context.Context, *ParameterId) (*User, error)
+	GetByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
+	GetFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error)
+	ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error)
 }
 
 // UnimplementedServiceServer should be embedded to have forward compatible implementations.
@@ -85,13 +96,16 @@ type UnimplementedServiceServer struct {
 func (UnimplementedServiceServer) CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedServiceServer) Get(context.Context, *Parameter) (*User, error) {
+func (UnimplementedServiceServer) Get(context.Context, *ParameterId) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedServiceServer) GetFromParent(context.Context, *Parameter) (*ResponseGetFromParent, error) {
+func (UnimplementedServiceServer) GetByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByUsernameOrEmail not implemented")
+}
+func (UnimplementedServiceServer) GetFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFromParent not implemented")
 }
-func (UnimplementedServiceServer) ValidateKey(context.Context, *Parameter) (*ResponseValidateKey, error) {
+func (UnimplementedServiceServer) ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateKey not implemented")
 }
 
@@ -125,7 +139,7 @@ func _Service_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _Service_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Parameter)
+	in := new(ParameterId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -137,13 +151,31 @@ func _Service_Get_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/user.Service/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).Get(ctx, req.(*Parameter))
+		return srv.(ServiceServer).Get(ctx, req.(*ParameterId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetByUsernameOrEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ParameterUsername)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetByUsernameOrEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.Service/GetByUsernameOrEmail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetByUsernameOrEmail(ctx, req.(*ParameterUsername))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_GetFromParent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Parameter)
+	in := new(ParameterId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -155,13 +187,13 @@ func _Service_GetFromParent_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/user.Service/GetFromParent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetFromParent(ctx, req.(*Parameter))
+		return srv.(ServiceServer).GetFromParent(ctx, req.(*ParameterId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_ValidateKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Parameter)
+	in := new(ParameterKey)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -173,7 +205,7 @@ func _Service_ValidateKey_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/user.Service/ValidateKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ValidateKey(ctx, req.(*Parameter))
+		return srv.(ServiceServer).ValidateKey(ctx, req.(*ParameterKey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,6 +224,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _Service_Get_Handler,
+		},
+		{
+			MethodName: "GetByUsernameOrEmail",
+			Handler:    _Service_GetByUsernameOrEmail_Handler,
 		},
 		{
 			MethodName: "GetFromParent",
