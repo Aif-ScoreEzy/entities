@@ -6,8 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/AIF-user-system-management/entities/helper"
-	protos "github.com/AIF-user-system-management/entities/protos"
+	"github.com/Aif-ScoreEzy/entities/helper"
+	protos "github.com/Aif-ScoreEzy/entities/protos"
 	"github.com/golang/protobuf/jsonpb"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"

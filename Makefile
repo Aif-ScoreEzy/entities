@@ -2,7 +2,7 @@
 .PHONY: protos init vendor
 
 init : 
-	go mod init github.com/AIF-user-system-management/entities
+	go mod init github.com/Aif-ScoreEzy/entities
 
 vendor : 
 	go mod vendor
