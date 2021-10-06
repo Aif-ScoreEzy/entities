@@ -19,7 +19,7 @@ type User struct {
 	Name      string         `gorm:"type:varchar(255);NOT NULL;" json:"name"`
 	Username  string         `gorm:"type:varchar(255);NOT NULL;unique" json:"username"`
 	Email     string         `gorm:"type:varchar(255);NOT NULL;unique" json:"email"`
-	Password  string         `gorm:"type:varchar(255);NOT NULL" json:"-"`
+	Password  string         `gorm:"type:varchar(255);NOT NULL" json:"password"`
 	APIKey    string         `gorm:"type:varchar(255);NOT NULL;unique" json:"api_key"`
 	ParentID  *string        `json:"parent_id"`
 	Child     []*User        `json:"child" gorm:"foreignkey:ParentID"`
