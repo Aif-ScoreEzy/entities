@@ -79,7 +79,7 @@ func (c *serviceClient) ValidateKey(ctx context.Context, in *ParameterKey, opts 
 }
 
 // ServiceServer is the server API for Service service.
-// All implementations should embed UnimplementedServiceServer
+// All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
 	CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error)
@@ -87,9 +87,10 @@ type ServiceServer interface {
 	GetByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
 	GetFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error)
 	ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error)
+	mustEmbedUnimplementedServiceServer()
 }
 
-// UnimplementedServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedServiceServer struct {
 }
 
@@ -108,6 +109,7 @@ func (UnimplementedServiceServer) GetFromParent(context.Context, *ParameterId) (
 func (UnimplementedServiceServer) ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateKey not implemented")
 }
+func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
 // UnsafeServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to ServiceServer will
@@ -239,5 +241,5 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "user.proto",
+	Metadata: "models-protos/user/user.proto",
 }

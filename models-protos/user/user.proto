@@ -10,10 +10,10 @@ package user;
 // Creates an item in the database
 service Service {
     rpc CreateUser(RequestCreateUser) returns (ResponseCreateUser);
-    rpc Get(ParameterId) returns (User);
-    rpc GetByUsernameOrEmail(ParameterUsername) returns (User);
-    rpc GetFromParent(ParameterId) returns (ResponseGetFromParent);
-    rpc ValidateKey(ParameterKey) returns (ResponseValidateKey);
+    rpc GetUserByID(ParameterId) returns (User);
+    rpc GetUserByUsernameOrEmail(ParameterUsername) returns (User);
+    rpc GetUserFromParent(ParameterId) returns (ResponseGetFromParent);
+    rpc ValidateAPIKey(ParameterKey) returns (ResponseValidateKey);
 }
 
 

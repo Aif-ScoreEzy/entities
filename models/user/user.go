@@ -1,4 +1,4 @@
-package domain
+package user
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Aif-ScoreEzy/entities/helper"
-	protos "github.com/Aif-ScoreEzy/entities/protos"
+	protos "github.com/Aif-ScoreEzy/entities/models-protos/user"
 	"github.com/golang/protobuf/jsonpb"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
@@ -28,7 +28,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-//BeforeCreate Hook before insert to database
+//BeforeCreate function to sanitize data before inserting to Database
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.ID == "" {
 		u.ID = uuid.NewV4().String()
@@ -38,7 +38,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 		u.APIKey = helper.GenerateAPIKey()
 	}
 
-	if u.Password == "" {
+	if u.Password != "" {
 		u.Password = helper.Hash(u.Password)
 	}
 
@@ -46,7 +46,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-//Validate object of model
+//Validate validate all required data
 func (u *User) Validate() error {
 	if u.Username == "" {
 		return errors.New("username is required")
@@ -55,6 +55,7 @@ func (u *User) Validate() error {
 	if u.Password == "" {
 		return errors.New("password is required")
 	}
+
 	if u.APIKey == "" {
 		return errors.New("api_key is required")
 	}
