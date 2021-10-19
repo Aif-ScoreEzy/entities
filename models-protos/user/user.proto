@@ -11,9 +11,9 @@ package user;
 service Service {
     rpc CreateUser(RequestCreateUser) returns (ResponseCreateUser);
     rpc GetUserByID(ParameterId) returns (User);
-    rpc GetUserByUsernameOrEmail(ParameterUsername) returns (User);
+    rpc GetUsersByUsernameOrEmail(ParameterUsername) returns (User);
     rpc GetUserFromParent(ParameterId) returns (ResponseGetFromParent);
-    rpc ValidateAPIKey(ParameterKey) returns (ResponseValidateKey);
+    rpc ValidateAPIKey(ParameterAPIKey) returns (ResponseValidateKey);
 }
 
 
@@ -37,7 +37,7 @@ message ParameterId {
     string id = 1 [json_name="id"];
 }
 
-message ParameterKey {
+message ParameterAPIKey {
     string api_key = 1[json_name="api_key"];
 
 }
@@ -55,5 +55,5 @@ message ResponseGetFromParent {
 }
 
 message ResponseCreateUser {
-    string message = 1;
+    User user = 1;
 }

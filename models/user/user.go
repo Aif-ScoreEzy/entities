@@ -46,6 +46,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+// This should be in the service logic
 //Validate validate all required data
 func (u *User) Validate() error {
 	if u.Username == "" {
