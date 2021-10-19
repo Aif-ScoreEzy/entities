@@ -25,11 +25,11 @@ func GenerateAPIKey() string {
 	length := 32
 	number := 11
 	upper_case := 11
-	return GenerateRandomKey(length, number, upper_case)
+	return GenerateRandomString(length, number, upper_case)
 }
 
-// GenerateRandomKey Generate random key for APIKeys
-func GenerateRandomKey(length, number, upper_case int) string {
+// GenerateRandomString Generate random key for APIKeys
+func GenerateRandomString(length, number, upper_case int) string {
 	var password strings.Builder
 
 	//Set numerice
