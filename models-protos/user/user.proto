@@ -11,7 +11,7 @@ package user;
 service Service {
     rpc CreateUser(RequestCreateUser) returns (ResponseCreateUser);
     rpc GetUserByID(ParameterId) returns (User);
-    rpc GetUsersByUsernameOrEmail(ParameterUsername) returns (User);
+    rpc GetUserByUsernameOrEmail(ParameterUsername) returns (User);
     rpc GetUserFromParent(ParameterId) returns (ResponseGetFromParent);
     rpc ValidateAPIKey(ParameterAPIKey) returns (ResponseValidateKey);
 }

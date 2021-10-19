@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ServiceClient interface {
 	CreateUser(ctx context.Context, in *RequestCreateUser, opts ...grpc.CallOption) (*ResponseCreateUser, error)
 	GetUserByID(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error)
-	GetUsersByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error)
+	GetUserByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error)
 	GetUserFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error)
 	ValidateAPIKey(ctx context.Context, in *ParameterAPIKey, opts ...grpc.CallOption) (*ResponseValidateKey, error)
 }
@@ -51,9 +51,9 @@ func (c *serviceClient) GetUserByID(ctx context.Context, in *ParameterId, opts .
 	return out, nil
 }
 
-func (c *serviceClient) GetUsersByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error) {
+func (c *serviceClient) GetUserByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/user.Service/GetUsersByUsernameOrEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.Service/GetUserByUsernameOrEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (c *serviceClient) ValidateAPIKey(ctx context.Context, in *ParameterAPIKey,
 type ServiceServer interface {
 	CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error)
 	GetUserByID(context.Context, *ParameterId) (*User, error)
-	GetUsersByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
+	GetUserByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
 	GetUserFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error)
 	ValidateAPIKey(context.Context, *ParameterAPIKey) (*ResponseValidateKey, error)
 	mustEmbedUnimplementedServiceServer()
@@ -100,8 +100,8 @@ func (UnimplementedServiceServer) CreateUser(context.Context, *RequestCreateUser
 func (UnimplementedServiceServer) GetUserByID(context.Context, *ParameterId) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
-func (UnimplementedServiceServer) GetUsersByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByUsernameOrEmail not implemented")
+func (UnimplementedServiceServer) GetUserByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUsernameOrEmail not implemented")
 }
 func (UnimplementedServiceServer) GetUserFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserFromParent not implemented")
@@ -158,20 +158,20 @@ func _Service_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetUsersByUsernameOrEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_GetUserByUsernameOrEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ParameterUsername)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetUsersByUsernameOrEmail(ctx, in)
+		return srv.(ServiceServer).GetUserByUsernameOrEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.Service/GetUsersByUsernameOrEmail",
+		FullMethod: "/user.Service/GetUserByUsernameOrEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetUsersByUsernameOrEmail(ctx, req.(*ParameterUsername))
+		return srv.(ServiceServer).GetUserByUsernameOrEmail(ctx, req.(*ParameterUsername))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -228,8 +228,8 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Service_GetUserByID_Handler,
 		},
 		{
-			MethodName: "GetUsersByUsernameOrEmail",
-			Handler:    _Service_GetUsersByUsernameOrEmail_Handler,
+			MethodName: "GetUserByUsernameOrEmail",
+			Handler:    _Service_GetUserByUsernameOrEmail_Handler,
 		},
 		{
 			MethodName: "GetUserFromParent",
