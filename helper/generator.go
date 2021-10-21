@@ -11,22 +11,25 @@ var (
 	lowerCharSet = "abcdedfghijklmnopqrst"
 	upperCharSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	numberSet    = "0123456789"
-	allCharSet   = lowerCharSet + upperCharSet + numberSet
+	// allCharSet   = lowerCharSet + upperCharSet + numberSet
 )
 
+// Hash Use to hash password
 func Hash(pwd string) string {
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 	return string(hashed)
 }
 
+// GenerateAPIKey ...
 func GenerateAPIKey() string {
 	length := 32
 	number := 11
 	upper_case := 11
-	return GenerateRandomKey(length, number, upper_case)
+	return GenerateRandomString(length, number, upper_case)
 }
 
-func GenerateRandomKey(length, number, upper_case int) string {
+// GenerateRandomString Generate random key for APIKeys
+func GenerateRandomString(length, number, upper_case int) string {
 	var password strings.Builder
 
 	//Set numerice

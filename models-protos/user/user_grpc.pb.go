@@ -19,10 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
 	CreateUser(ctx context.Context, in *RequestCreateUser, opts ...grpc.CallOption) (*ResponseCreateUser, error)
-	Get(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error)
-	GetByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error)
-	GetFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error)
-	ValidateKey(ctx context.Context, in *ParameterKey, opts ...grpc.CallOption) (*ResponseValidateKey, error)
+	GetUserByID(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error)
+	GetUserByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error)
+	GetUserFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error)
+	ValidateAPIKey(ctx context.Context, in *ParameterAPIKey, opts ...grpc.CallOption) (*ResponseValidateKey, error)
 }
 
 type serviceClient struct {
@@ -42,36 +42,36 @@ func (c *serviceClient) CreateUser(ctx context.Context, in *RequestCreateUser, o
 	return out, nil
 }
 
-func (c *serviceClient) Get(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error) {
+func (c *serviceClient) GetUserByID(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/user.Service/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.Service/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *serviceClient) GetByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error) {
+func (c *serviceClient) GetUserByUsernameOrEmail(ctx context.Context, in *ParameterUsername, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
-	err := c.cc.Invoke(ctx, "/user.Service/GetByUsernameOrEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.Service/GetUserByUsernameOrEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *serviceClient) GetFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error) {
+func (c *serviceClient) GetUserFromParent(ctx context.Context, in *ParameterId, opts ...grpc.CallOption) (*ResponseGetFromParent, error) {
 	out := new(ResponseGetFromParent)
-	err := c.cc.Invoke(ctx, "/user.Service/GetFromParent", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.Service/GetUserFromParent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *serviceClient) ValidateKey(ctx context.Context, in *ParameterKey, opts ...grpc.CallOption) (*ResponseValidateKey, error) {
+func (c *serviceClient) ValidateAPIKey(ctx context.Context, in *ParameterAPIKey, opts ...grpc.CallOption) (*ResponseValidateKey, error) {
 	out := new(ResponseValidateKey)
-	err := c.cc.Invoke(ctx, "/user.Service/ValidateKey", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.Service/ValidateAPIKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,35 +79,37 @@ func (c *serviceClient) ValidateKey(ctx context.Context, in *ParameterKey, opts 
 }
 
 // ServiceServer is the server API for Service service.
-// All implementations should embed UnimplementedServiceServer
+// All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
 	CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error)
-	Get(context.Context, *ParameterId) (*User, error)
-	GetByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
-	GetFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error)
-	ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error)
+	GetUserByID(context.Context, *ParameterId) (*User, error)
+	GetUserByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error)
+	GetUserFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error)
+	ValidateAPIKey(context.Context, *ParameterAPIKey) (*ResponseValidateKey, error)
+	mustEmbedUnimplementedServiceServer()
 }
 
-// UnimplementedServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedServiceServer struct {
 }
 
 func (UnimplementedServiceServer) CreateUser(context.Context, *RequestCreateUser) (*ResponseCreateUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedServiceServer) Get(context.Context, *ParameterId) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedServiceServer) GetUserByID(context.Context, *ParameterId) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
-func (UnimplementedServiceServer) GetByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetByUsernameOrEmail not implemented")
+func (UnimplementedServiceServer) GetUserByUsernameOrEmail(context.Context, *ParameterUsername) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUsernameOrEmail not implemented")
 }
-func (UnimplementedServiceServer) GetFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFromParent not implemented")
+func (UnimplementedServiceServer) GetUserFromParent(context.Context, *ParameterId) (*ResponseGetFromParent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserFromParent not implemented")
 }
-func (UnimplementedServiceServer) ValidateKey(context.Context, *ParameterKey) (*ResponseValidateKey, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateKey not implemented")
+func (UnimplementedServiceServer) ValidateAPIKey(context.Context, *ParameterAPIKey) (*ResponseValidateKey, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAPIKey not implemented")
 }
+func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
 // UnsafeServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to ServiceServer will
@@ -138,74 +140,74 @@ func _Service_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ParameterId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).Get(ctx, in)
+		return srv.(ServiceServer).GetUserByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.Service/Get",
+		FullMethod: "/user.Service/GetUserByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).Get(ctx, req.(*ParameterId))
+		return srv.(ServiceServer).GetUserByID(ctx, req.(*ParameterId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetByUsernameOrEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_GetUserByUsernameOrEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ParameterUsername)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetByUsernameOrEmail(ctx, in)
+		return srv.(ServiceServer).GetUserByUsernameOrEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.Service/GetByUsernameOrEmail",
+		FullMethod: "/user.Service/GetUserByUsernameOrEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetByUsernameOrEmail(ctx, req.(*ParameterUsername))
+		return srv.(ServiceServer).GetUserByUsernameOrEmail(ctx, req.(*ParameterUsername))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetFromParent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_GetUserFromParent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ParameterId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetFromParent(ctx, in)
+		return srv.(ServiceServer).GetUserFromParent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.Service/GetFromParent",
+		FullMethod: "/user.Service/GetUserFromParent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetFromParent(ctx, req.(*ParameterId))
+		return srv.(ServiceServer).GetUserFromParent(ctx, req.(*ParameterId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_ValidateKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ParameterKey)
+func _Service_ValidateAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ParameterAPIKey)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).ValidateKey(ctx, in)
+		return srv.(ServiceServer).ValidateAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.Service/ValidateKey",
+		FullMethod: "/user.Service/ValidateAPIKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ValidateKey(ctx, req.(*ParameterKey))
+		return srv.(ServiceServer).ValidateAPIKey(ctx, req.(*ParameterAPIKey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -222,22 +224,22 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Service_CreateUser_Handler,
 		},
 		{
-			MethodName: "Get",
-			Handler:    _Service_Get_Handler,
+			MethodName: "GetUserByID",
+			Handler:    _Service_GetUserByID_Handler,
 		},
 		{
-			MethodName: "GetByUsernameOrEmail",
-			Handler:    _Service_GetByUsernameOrEmail_Handler,
+			MethodName: "GetUserByUsernameOrEmail",
+			Handler:    _Service_GetUserByUsernameOrEmail_Handler,
 		},
 		{
-			MethodName: "GetFromParent",
-			Handler:    _Service_GetFromParent_Handler,
+			MethodName: "GetUserFromParent",
+			Handler:    _Service_GetUserFromParent_Handler,
 		},
 		{
-			MethodName: "ValidateKey",
-			Handler:    _Service_ValidateKey_Handler,
+			MethodName: "ValidateAPIKey",
+			Handler:    _Service_ValidateAPIKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "user.proto",
+	Metadata: "models-protos/user/user.proto",
 }
